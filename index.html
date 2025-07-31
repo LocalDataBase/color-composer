@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Color Composer</title>
+  <style>
+    body {
+      background: #f5f6fa;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Fira Mono', 'Consolas', monospace;
+      margin: 0;
+      letter-spacing: 0.01em;
+      transition: background 0.3s;
+    }
+    body.dark {
+      background: #1a1a1a;
+    }
+    .card {
+      background: #fff;
+      border: 1.5px solid #d1d5db;
+      border-radius: 10px;
+      box-shadow: 0 2px 16px #0001;
+      padding: 28px 18px 22px 18px;
+      max-width: 90vw;
+      width: 100%;
+      min-width: 320px;
+      text-align: left;
+      color: #23272f;
+      transition: background 0.3s, color 0.3s, border 0.3s;
+      position: relative;
+    }
+    @media (min-width: 700px) {
+      .card {
+        max-width: 800px;
+        padding: 40px 40px 32px 40px;
+      }
+    }
+    body.dark .card {
+      background: #2a2a2a;
+      color: #e0e0e0;
+      border: 1.5px solid #404040;
+      box-shadow: 0 2px 16px #0008;
+    }
+
+    /* Dark Mode Toggle 
+    .dark-mode-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 100;
+    }
+    
+    .toggle-switch {
+      position: relative;
+      width: 40px;
+      height: 22px;
+      background: #e5e7eb;
+      border-radius: 13px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .toggle-switch:hover {
+      background: #d1d5db;
+    }
+    
+    .toggle-switch::before {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .toggle-switch.active {
+      background: #6366f1;
+    }
+    
+    .toggle-switch.active::before {
+      transform: translateX(18px);
+      background: #fff;
+    }
+    
+    .toggle-switch::after {
+      position: absolute;
+      top: 50%;
+      left: 8px;
+      transform: translateY(-50%);
+      font-size: 10px;
+      transition: all 0.3s ease;
+      opacity: 0.7;
+      color: #6b7280;
+      font-weight: bold;
+    }
+    
+    .toggle-switch.active::after {
+      left: 36px;
+      opacity: 1;
+      color: #fff;
+    }
+    
+    body.dark .toggle-switch {
+      background: #404040;
+    }
+    
+    body.dark .toggle-switch:hover {
+      background: #505050;
+    }
+    
+    body.dark .toggle-switch.active {
+      background: #606060;
+    }
+*/
+    h1 {
+      font-size: 1.08rem;
+      margin-bottom: 12px;
+      color: inherit;
+      letter-spacing: 0.08em;
+      font-family: inherit;
+      font-weight: 500;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 6px;
+      margin-left: -4px;
+      margin-right: -4px;
+      transition: color 0.3s, border 0.3s;
+      padding-right: 80px; /* Место для переключателя */
+    }
+    body.dark h1 {
+      border-bottom: 1px solid #404040;
+    }
+    #fileInput, select, button {
+      font-family: inherit;
+      font-size: 1rem;
+      background: #f5f6fa;
+      color: #23272f;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      padding: 4px 10px;
+      margin-right: 8px;
+      margin-bottom: 0;
+      outline: none;
+      transition: background 0.3s, color 0.3s, border 0.3s;
+    }
+    #fileInput:focus, select:focus, button:focus {
+      border: 1.5px solid #23272f;
+    }
+    body.dark #fileInput, body.dark select, body.dark button {
+      background: #2a2a2a;
+      color: #e0e0e0;
+      border: 1px solid #404040;
+    }
+    body.dark #fileInput:focus, body.dark select:focus, body.dark button:focus {
+      border: 1.5px solid #e0e0e0;
+    }
+    #dropZone {
+      border: 1.5px dashed #d1d5db;
+      border-radius: 6px;
+      padding: 18px 0;
+      margin-bottom: 14px;
+      color: #23272f;
+      font-size: 1rem;
+      background: #f5f6fa;
+      transition: background 0.2s, color 0.2s, border 0.2s;
+      cursor: pointer;
+      box-shadow: none;
+      text-align: center;
+    }
+    #dropZone:hover {
+      background: #e5e7eb;
+      color: #181a1b;
+    }
+    body.dark #dropZone {
+      border: 1.5px dashed #404040;
+      background: #2a2a2a;
+      color: #e0e0e0;
+    }
+    body.dark #dropZone:hover {
+      background: #1a1a1a;
+      color: #fff;
+    }
+    #preview {
+      max-width: 100%;
+      height: auto;
+      min-width: 120px;
+      min-height: 80px;
+      border-radius: 6px;
+      box-shadow: 0 1px 8px #0002;
+      margin: 0 auto 12px auto;
+      display: none;
+      border: 1.5px solid #d1d5db;
+      background: #f5f6fa;
+      transition: background 0.3s, border 0.3s;
+    }
+    #preview.show {
+      display: block;
+      animation: none;
+    }
+    body.dark #preview {
+      border: 1.5px solid #404040;
+      background: #2a2a2a;
+      box-shadow: 0 1px 8px #0008;
+    }
+    #result {
+      margin-top: 18px;
+      text-align: left;
+      font-size: 1.08rem;
+      color: inherit;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+    .color-bar {
+      display: flex;
+      height: 36px;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 10px;
+      border: 1px solid #d1d5db;
+      background: #f5f6fa;
+      box-shadow: none;
+      transition: background 0.3s, border 0.3s;
+      width: 100%;
+      min-width: 120px;
+    }
+    .color-segment {
+      height: 100%;
+      transition: width 0.7s cubic-bezier(.4,2,.6,1);
+      box-shadow: none;
+    }
+    body.dark .color-bar {
+      border: 1px solid #404040;
+      background: #2a2a2a;
+    }
+    .color-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 10px 0;
+    }
+    .color-list li {
+      display: flex;
+      align-items: center;
+      margin-bottom: 3px;
+      font-size: 0.98rem;
+      color: inherit;
+      letter-spacing: 0.04em;
+      font-family: inherit;
+      background: none;
+      border: none;
+    }
+    .color-dot {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      margin-right: 7px;
+      border: 1px solid #d1d5db;
+      background: #f5f6fa;
+      transition: background 0.3s, border 0.3s;
+    }
+    body.dark .color-dot {
+      border: 1px solid #404040;
+      background: #2a2a2a;
+    }
+    .ideal {
+      background: #f5f6fa;
+      border-radius: 4px;
+      padding: 3px 7px;
+      font-size: 0.92rem;
+      color: inherit;
+      margin-top: 7px;
+      display: inline-block;
+      border: 1px solid #d1d5db;
+      font-family: inherit;
+      transition: background 0.3s, border 0.3s;
+    }
+    body.dark .ideal {
+      background: #2a2a2a;
+      border: 1px solid #404040;
+    }
+    .footer {
+      margin-top: 18px;
+      font-size: 0.98rem;
+      color: #a0a8b8;
+      text-align: left;
+      border-top: 1px solid #e5e7eb;
+      padding-top: 6px;
+      font-family: inherit;
+      transition: color 0.3s, border 0.3s;
+    }
+    body.dark .footer {
+      color: #a0a0a0;
+      border-top: 1px solid #404040;
+    }
+    
+    /* Spot Mode X Panel Dark Theme */
+    body.dark #spotModeXPanel {
+      background: #2a2a2a;
+      border: 1px solid #404040;
+    }
+    
+    body.dark #spotModeXPanel input[type="text"] {
+      background: #2a2a2a;
+      color: #e0e0e0;
+      border: 1px solid #404040;
+    }
+    
+    body.dark #spotModeXPanel input[type="text"]::placeholder {
+      color: #888;
+    }
+    
+    /* Manual Color Assignment Panel Dark Theme */
+    body.dark #manualColorAssignmentPanel {
+      background: #2a2a2a;
+      border: 1px solid #404040;
+    }
+    
+    /* Spot Mode X Panel Dark Theme */
+    body.dark #spotModeXPanel {
+      background: #2a2a2a;
+      border: 1px solid #404040;
+    }
+    
+    body.dark #spotModeXPanel > div > div {
+      background: #1a1a1a;
+      border: 1px solid #404040;
+    }
+    
+    body.dark .color-option:hover {
+      border-color: #60a5fa !important;
+      transform: scale(1.1);
+    }
+    
+    /* Color option hover effects */
+    .color-option {
+      transition: all 0.2s ease;
+    }
+    
+    .color-option:hover {
+      border-color: #3b82f6 !important;
+      transform: scale(1.1);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    
+    /* Эффект нажатия для кнопок Spot Mode */
+    #clearSelection:active, #undoLast:active, #analyzeSelection:active, #optimizeColors:active {
+      transform: translateY(1px);
+      opacity: 0.8;
+    }
+    
+    /* Эффект нажатия для кнопок Spot Mode X */
+    #clearSelectionX:active, #undoLastX:active, #analyzeSelectionX:active {
+      transform: translateY(1px);
+      opacity: 0.8;
+    }
+    
+
+    
+
+    @media (max-width: 700px) {
+      .card {
+        max-width: 98vw;
+        padding: 18px 2vw 18px 2vw;
+      }
+      #preview {
+        max-width: 90vw;
+        max-height: 40vw;
+      }
+      .color-bar {
+        height: 18px;
+      }
+      .color-dot {
+        width: 12px;
+        height: 12px;
+        margin-right: 6px;
+      }
+      .color-list li {
+        font-size: 0.92rem;
+        margin-bottom: 4px;
+      }
+      .ideal {
+        font-size: 0.88rem;
+        padding: 3px 6px;
+      }
+      h1 {
+        font-size: 0.98rem;
+        padding-right: 70px; /* Меньше места на мобильных */
+      }
+      .dark-mode-toggle {
+        top: 15px;
+        right: 15px;
+      }
+      .toggle-switch {
+        width: 44px;
+        height: 22px;
+      }
+      .toggle-switch::before {
+        width: 14px;
+        height: 14px;
+      }
+      .toggle-switch.active::before {
+        transform: translateX(22px);
+      }
+      .toggle-switch::after {
+        font-size: 8px;
+        left: 5px;
+      }
+      .toggle-switch.active::after {
+        left: 28px;
+      }
+    }
+    @import url('https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500&display=swap');
+  </style>
+</head>
+<body>
+  <div class="card">
+    <!-- Dark Mode Toggle -->
+    <div class="dark-mode-toggle">
+      <div class="toggle-switch" id="darkModeToggle"></div>
+    </div>
+    
+    <h1><span style="color:#50c091"></span> Color Composer</h1>
+    
+    <!-- GitHub Documentation Link -->
+    <div style="display:flex;justify-content:flex-end;margin-bottom:20px;">
+      <div style="text-align:center;padding:12px;background:#f8fafc;border:1px solid #e5e7eb;border-radius:8px;max-width:50%;">
+        <a href="https://github.com/LocalDataBase/Color-Composer" target="_blank" style="color:#ffffff;text-decoration:none;display:inline-flex;align-items:center;gap:6px;background:#24292e;padding:8px 14px;border-radius:6px;font-weight:500;font-size:0.9rem;transition:all 0.2s;box-shadow:0 2px 4px rgba(0,0,0,0.1);">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+          </svg>
+          Docs & Source Code
+        </a>
+        <div style="margin-top:6px;font-size:0.8rem;color:#6b7280;">Learn about 60-30-10 color rule, shape theory, and usage examples</div>
+      </div>
+    </div>
+    
+    <div id="dropZone" style="border:2px dashed #b6c2d6;border-radius:12px;padding:32px 0;margin-bottom:18px;color:#7a869a;font-size:1.12rem;transition:background 0.2s;cursor:pointer;">Drop image here or click to select</div>
+    <input type="file" id="fileInput" accept="image/*" style="display:none;">
+    <div style="display:flex;gap:18px;justify-content:center;align-items:center;margin-bottom:18px;flex-wrap:wrap;">
+      <label style="font-size:1.08rem;">Colors:
+        <select id="colorCount" style="font-size:1.08rem;padding:4px 10px;border-radius:6px;margin-left:6px;">
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+        </select>
+      </label>
+      <label style="font-size:1.08rem;display:flex;align-items:center;gap:6px;">
+        <input type="checkbox" id="filterBW" style="transform:scale(1.2);margin-right:4px;"> Filter white/black/gray
+      </label>
+      <label style="font-size:1.08rem;display:flex;align-items:center;gap:6px;">
+        <span style="margin-right:6px;">Algorithm:</span>
+        <select id="algoSelect" style="font-size:1.08rem;padding:4px 10px;border-radius:6px;">
+          <option value="colorthief">Color Thief</option>
+          <option value="kmeans">K-means</option>
+
+          <option value="rgbsplit">RGB+BWGS Split</option>
+          <option value="fixed6">Fixed 6 Colors</option>
+          <option value="illumination">Illumination Compensated</option>
+          <option value="interactive">Spot Mode</option>
+          <option value="spotmodex">Spot Mode X</option>
+        </select>
+      </label>
+    </div>
+    
+    <div id="selectionControls" style="display:none;margin-bottom:18px;text-align:center;">
+      <button id="clearSelection" style="background:#6b7280;color:white;border:none;padding:8px 16px;border-radius:6px;margin-right:8px;cursor:pointer;">Clear All</button>
+      <button id="undoLast" style="background:#6b7280;color:white;border:none;padding:8px 16px;border-radius:6px;margin-right:8px;cursor:pointer;">Undo Last</button>
+      <button id="analyzeSelection" style="background:#374151;color:white;border:none;padding:8px 16px;border-radius:6px;margin-right:8px;cursor:pointer;">Analyze</button>
+      <button id="optimizeColors" style="background:#4b5563;color:white;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;display:none;">Optimize to Top-3</button>
+      <div style="margin-top:8px;font-size:0.9rem;color:#6b7280;">Draw around objects with mouse, press Enter to complete object</div>
+      <div id="objectCounter" style="margin-top:4px;font-size:0.85rem;color:#6b7280;font-weight:500;">Objects: 0/50</div>
+    </div>
+    
+    <!-- Spot Mode X Controls -->
+    <div id="spotModeXControls" style="display:none;margin-bottom:18px;text-align:center;">
+      <button id="clearSelectionX" style="background:#6b7280;color:white;border:none;padding:8px 16px;border-radius:6px;margin-right:8px;cursor:pointer;">Clear All</button>
+      <button id="undoLastX" style="background:#6b7280;color:white;border:none;padding:8px 16px;border-radius:6px;margin-right:8px;cursor:pointer;">Undo Last</button>
+      <button id="analyzeSelectionX" style="background:#374151;color:white;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;">Analyze</button>
+      <div style="margin-top:8px;font-size:0.9rem;color:#6b7280;">Draw around objects with mouse, press Enter to complete object</div>
+      <div id="objectCounterX" style="margin-top:4px;font-size:0.85rem;color:#6b7280;font-weight:500;">Objects: 0/50</div>
+    </div>
+
+    <div id="imageContainer" style="position:relative;display:none;margin-bottom:18px;">
+      <img id="preview" src="" alt="Preview" style="max-width:100%;height:auto;cursor:crosshair;display:block;"/>
+      <canvas id="selectionCanvas" style="position:absolute;top:0;left:0;pointer-events:none;z-index:10;width:100%;height:100%;"></canvas>
+    </div>
+    <div id="result" style="margin-bottom:18px;"></div>
+    
+    <!-- Spot Mode X Color Selection Panel -->
+    <div id="spotModeXPanel" style="display:none;margin-bottom:10px;background:white;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;">
+      <div style="background:#f8fafc;color:#374151;padding:14px 16px;font-weight:500;font-size:1rem;border-bottom:1px solid #e5e7eb;">
+        Color Selection
+      </div>
+      <div style="padding:12px;display:flex;gap:12px;align-items:center;">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <div id="primaryColorBtn" style="width:32px;height:32px;background:#b1b0a9;border:2px solid #d1d5db;border-radius:4px;cursor:pointer;" data-color="#b1b0a9"></div>
+          <input type="text" id="primaryColorName" placeholder="Primary" style="width:80px;padding:4px;border:1px solid #d1d5db;border-radius:3px;font-size:11px;">
+        </div>
+        
+        <div style="display:flex;align-items:center;gap:6px;">
+          <div id="secondaryColorBtn" style="width:32px;height:32px;background:#876e5f;border:2px solid #d1d5db;border-radius:4px;cursor:pointer;" data-color="#876e5f"></div>
+          <input type="text" id="secondaryColorName" placeholder="Secondary" style="width:80px;padding:4px;border:1px solid #d1d5db;border-radius:3px;font-size:11px;">
+        </div>
+        
+        <div style="display:flex;align-items:center;gap:6px;">
+          <div id="accentColorBtn" style="width:32px;height:32px;background:#2c2827;border:2px solid #d1d5db;border-radius:4px;cursor:pointer;" data-color="#2c2827"></div>
+          <input type="text" id="accentColorName" placeholder="Accent" style="width:80px;padding:4px;border:1px solid #d1d5db;border-radius:3px;font-size:11px;">
+        </div>
+      </div>
+    </div>
+    
+
+    
+    <!-- Manual Color Assignment Panel (Spot Mode X) -->
+    <div id="manualColorAssignmentPanel" style="display:none;margin-bottom:20px;background:white;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;">
+      <div style="background:#f8fafc;color:#374151;padding:14px 16px;font-weight:500;font-size:1rem;border-bottom:1px solid #e5e7eb;">
+        Manual Color Assignment
+      </div>
+      <div id="manualColorAssignmentContent" style="padding:16px;display:grid;grid-template-columns:1fr;gap:6px;">
+        <!-- Content will be generated by JavaScript -->
+      </div>
+    </div>
+    
+    <div id="history" style="margin-top:32px;"></div>
+    <div class="footer" style="text-align:center;margin-top:20px;padding:10px;border-top:1px solid #e5e7eb;color:#6b7280;font-size:0.9rem;">
+      Analysis Tool
+    </div>
+  </div>
+  
+
+  
+  <script src="color-thief.min.js"></script>
+  <script src="renderer.js"></script>
+</body>
+</html> 
