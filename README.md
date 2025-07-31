@@ -131,7 +131,7 @@ The application is not limited to movie scenes. Here are a couple of visual anal
 
 *`Analysis by Gleb Alexandrov. Work by Tor Frick.`*
 
-<img align="center" src="https://github.com/LocalDataBase/Color-Composer/blob/main/img/3d.jpg" /></a>
+<img align="center" src="https://github.com/LocalDataBase/Color-Composer/blob/main/img/3d_2.jpg" /></a>
 
 *`Analysis in Color Composer.`*
 
@@ -141,7 +141,7 @@ The application is not limited to movie scenes. Here are a couple of visual anal
 
 *`Analysis by Gleb Alexandrov. Work by James Miller.`*
 
-<img align="center" src="https://github.com/LocalDataBase/Color-Composer/blob/main/img/3d_2.jpg" /></a>
+<img align="center" src="https://github.com/LocalDataBase/Color-Composer/blob/main/img/3d.jpg" /></a>
 
 *`Analysis in Color Composer.`*
 
