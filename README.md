@@ -1,7 +1,7 @@
 # Color Composer 
 ### Tool for visual designers, filmmakers, and artists.
 
-Link - https://localdatabase.github.io/Color-Composer/
+Link - https://localdatabase.github.io/color-composer/
 
 The human eye, although it reads attractiveness intuitively, still requires knowledge to build this "attractiveness", which is obtained through practice and analysis. Even knowing these rules/theories, it may still be difficult for a beginner to immediately apply them in practice.
 
